@@ -1,0 +1,51 @@
+---
+# https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-install-and-set-up-docker-on-ubuntu-20-04
+- name: Install required system packages
+  ansible.builtin.apt:
+    pkg:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    - python3-pip
+    - virtualenv
+    - python3-setuptools
+    state: latest
+    update_cache: true
+
+- name: Add Docker GPG apt Key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  ansible.builtin.apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Install Docker
+  ansible.builtin.package:
+    name:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    state: latest
+    update_cache: true
+
+  # Docker service start
+- name: Start Docker
+  ansible.builtin.service:
+    name: docker
+    enabled: true
+    state: started
+
+  # Added variables
+- name: Include variables
+  include_vars: vars.yml
+
+  # Установка docker-compose: https://github.com/docker/compose/releases
+- name: Install DockerCompose
+  ansible.builtin.get_url:
+    url: 'https://github.com/docker/compose/releases/download/{{docker_compose_version}}/docker-compose-Linux-x86_64'
+    dest: /usr/local/bin/docker-compose
+    mode: 'u+x,g+x'

@@ -1,0 +1,11 @@
+# Проверка: pre-commit run -a
+repos:
+    - repo: https://github.com/antonbabenko/pre-commit-terraform
+      rev: v1.77.0
+      hooks:
+          - id: terraform_fmt
+          - id: terraform_docs
+          - id: terraform_validate
+          - id: checkov
+          - id: terraform_tfsec
+          - id: terraform_tflint

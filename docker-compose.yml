@@ -1,0 +1,48 @@
+version: "3.9"
+# docker system prune для очистки неиспользуемых данных
+services:
+  
+  prometheus:
+    image:
+    container_name:
+    restart: unless-stopped
+    environment:
+    volumes:
+    ports:
+    depends_on:
+      
+  grafana:
+    image:
+    container_name:
+    restart: unless-stopped
+    environment:
+    volumes:
+    ports:
+    depends_on:
+      
+  node-explorer:
+    image:
+    container_name:
+    restart: unless-stopped
+    environment:
+    volumes:
+    ports:
+    depends_on:
+      
+  blackbox-explorer:
+    image:
+    container_name:
+    restart: unless-stopped
+    environment:
+    volumes:
+    ports:
+    depends_on:
+      
+  alert-manager: 
+    image:
+    container_name:
+    restart: unless-stopped
+    environment:
+    volumes:
+    ports:
+    depends_on:

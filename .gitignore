@@ -1,6 +1,7 @@
 ### My list ###
 *.lock.hcl
 .secure_files/*
+hosts
 
 # ---> Vim
 # Swap

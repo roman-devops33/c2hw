@@ -44,13 +44,16 @@ services:
       - 9100
     depends_on:
       
-  blackbox-explorer:
-    image:
-    container_name: c2hw-blackbox-explorer
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    container_name: c2hw-blackbox-exporter
+    command: '--config.file=/config/blackbox.yml'
     restart: unless-stopped
     environment:
     volumes:
-    ports:
+      - ./confs/blackbox:/config
+    expose:
+      - 9115
     depends_on:
       
   alert-manager: 

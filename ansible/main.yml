@@ -19,7 +19,7 @@
     # Установка докера
   - include_tasks: setupDocker.yml
 
-- hosts: zabbix
+- hosts: monitoring
   become: true
   tasks:
     # Развертывание проекта на виртуалке

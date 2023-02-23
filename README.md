@@ -33,3 +33,5 @@ ___
 * prometheus docker: <https://hub.docker.com/r/prom/prometheus>
 * diff docker expose and ports: <https://www.baeldung.com/ops/docker-compose-expose-vs-ports>
 * docker env vars: <https://docs.docker.com/compose/environment-variables/set-environment-variables/>
+* alertmanager telegram conf example: <https://velenux.wordpress.com/2022/09/12/how-to-configure-prometheus-alertmanager-to-send-alerts-to-telegram/>
+* alertmanager conf docs: <https://prometheus.io/docs/alerting/latest/configuration/>

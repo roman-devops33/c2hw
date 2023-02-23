@@ -1,5 +1,5 @@
-# Для теста использовать: terrform plan -var-file=../.secure_files/terrform.tfvars
-# Для разворачивания:     terrform apply -var-file=../.secure_files/terrform.tfvars
+# Для теста использовать: terraform plan -var-file=../.secure_files/terraform.tfvars
+# Для разворачивания:     terraform apply -var-file=../.secure_files/terraform.tfvars
 
 # Create VM
 resource "yandex_compute_instance" "vm" {

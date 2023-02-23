@@ -4,9 +4,9 @@ services:
   
   prometheus: # https://hub.docker.com/r/prom/prometheus
     image: prom/prometheus:latest
-    container_name: c2-hw-prometheus
+    container_name: c2hw-prometheus
     command:
-      - --config.file=/etc/prometheus/prometheus.yml
+      - '--config.file=/etc/prometheus/prometheus.yml'
     restart: unless-stopped
     environment:
     volumes:
@@ -14,11 +14,13 @@ services:
       - prometheus_data:/prometheus
     ports:
       - 127.0.0.1:9090:9090
+    expose:
+      - 9090
     depends_on:
       
   grafana:
     image:
-    container_name: c2-hw-grafana
+    container_name: c2hw-grafana
     restart: unless-stopped
     environment:
     volumes:
@@ -26,17 +28,25 @@ services:
     depends_on:
       
   node-explorer:
-    image:
-    container_name: c2-hw-node-explorer
+    image: prom/node-exporter:latest
+    container_name: c2hw-node-explorer
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     restart: unless-stopped
     environment:
     volumes:
-    ports:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    expose:
+      - 9100
     depends_on:
       
   blackbox-explorer:
     image:
-    container_name: c2-hw-blackbox-explorer
+    container_name: c2hw-blackbox-explorer
     restart: unless-stopped
     environment:
     volumes:
@@ -45,7 +55,7 @@ services:
       
   alert-manager: 
     image:
-    container_name: c2-hw-alert-manager
+    container_name: c2hw-alert-manager
     restart: unless-stopped
     environment:
     volumes:

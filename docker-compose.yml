@@ -1,5 +1,5 @@
 version: "3.9"
-# docker system prune для очистки неиспользуемых данных
+# sudo docker system prune для очистки неиспользуемых данных
 
 volumes:
   prometheus_data: {}
@@ -86,6 +86,12 @@ services:
       - 127.0.0.1:3000:3000
     depends_on:
       - prometheus
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.grafana.entrypoints=https'
+      - 'traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.grafana.tls=true'
+      - 'traefik.http.services.grafana.loadbalancer.server.port=3000'
 
   traefik:
     image: traefik:v3.0
@@ -95,7 +101,8 @@ services:
       - '--metrics.prometheus=true'
       - '--providers.docker=true'
       - '--providers.docker.watch'
-      - '--entrypoints.web-secure.address=:443'
+      - '--entrypoints.http.address=:80'
+      - '--entrypoints.https.address=:443'
       - '--providers.file.directory=/config'
       - '--providers.file.watch=true'
     restart: unless-stopped
@@ -108,9 +115,8 @@ services:
       - 80:80
       - 443:443
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik.entrypoints=https"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN_NAME}`)"
-      - "traefik.http.routers.traefik.tls=true"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.services.traefik-traefik.loadbalancer.server.port=888"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.traefik.entrypoints=https'
+      - 'traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.traefik.tls=true'
+      - 'traefik.http.routers.traefik.service=api@internal'

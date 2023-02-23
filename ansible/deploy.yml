@@ -26,15 +26,21 @@
   ansible.builtin.copy:
     src: ../.secure_files/{{ item }}
     dest: /home/roman/c2hw/ssl/
+    mode: '0600'
   with_items:
   - ssl.crt
   - ssl.key
 
-- name: copy psk files
+- name: copy conf files
   ansible.builtin.copy:
-    src: ../confs
+    src: ../confs/
     dest: /home/roman/c2hw/confs
     
+- name: copy env file
+  ansible.builtin.copy:
+    src: ../.secure_files/.env
+    dest: /home/roman/c2hw/.env
+
 # 'cmd' is module parameter
 - name: Run docker compose
   ansible.builtin.command:

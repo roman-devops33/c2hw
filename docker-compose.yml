@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 # sudo docker system prune для очистки неиспользуемых данных
 
 volumes:
@@ -12,6 +12,8 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     restart: unless-stopped
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - ./confs/prometheus:/etc/prometheus
       - prometheus_data:/prometheus
@@ -23,6 +25,12 @@ services:
       - cadvisor
       - node-exporter
       - blackbox-exporter
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.prometheus.entrypoints=https'
+      - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.prometheus.tls=true'
+      - 'traefik.http.services.prometheus.loadbalancer.server.port=9090'
       
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
@@ -78,6 +86,7 @@ services:
     restart: unless-stopped
     environment:
       - GF_USERS_ALLOW_SIGN_UP=false
+      - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - grafana_data:/var/lib/grafana
       - ./confs/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
@@ -94,7 +103,7 @@ services:
       - 'traefik.http.services.grafana.loadbalancer.server.port=3000'
 
   traefik:
-    image: traefik:v3.0
+    image: traefik:v2.9
     container_name: c2hw-traefik
     command:
       - '--api.dashboard=true'
@@ -106,6 +115,8 @@ services:
       - '--providers.file.directory=/config'
       - '--providers.file.watch=true'
     restart: unless-stopped
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /etc/localtime:/etc/localtime:ro

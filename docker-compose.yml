@@ -121,7 +121,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /etc/localtime:/etc/localtime:ro
       - ./confs/traefik:/config
-      - ./confs/ssl:/ssl:ro
+      - ./ssl:/ssl:ro
     ports:
       - 80:80
       - 443:443

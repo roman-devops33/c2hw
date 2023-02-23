@@ -36,3 +36,10 @@ ___
 * alertmanager telegram conf example: <https://velenux.wordpress.com/2022/09/12/how-to-configure-prometheus-alertmanager-to-send-alerts-to-telegram/>
 * alertmanager conf docs: <https://prometheus.io/docs/alerting/latest/configuration/>
 * traefik ssl: <https://traefik.io/blog/traefik-2-tls-101-23b4fbee81f1/>
+* gpg ver: <https://codex.so/gpg-verification>
+* git gpg: <https://stackoverflow.com/questions/36810467/git-commit-signing-failed-secret-key-not-available>
+* gpg export: <https://unix.stackexchange.com/questions/481939/how-to-export-a-gpg-private-key-and-public-key-to-a-file>
+* git verify:  [link](https://git-scm.com/book/ru/v2/%D0%98%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B-Git-%D0%9F%D0%BE%D0%B4%D0%BF%D0%B8%D1%81%D1%8C) 
+* traefik example: <https://docs.ibracorp.io/traefik/master/docker-compose>
+* traefik example two: <https://gmasil.de/docker/configure-traefik>
+* treafik prometheus monitoring: <https://medium.com/@ugenef/application-monitoring-with-traefik-prometheus-grafana-and-docker-compose-for-beginners-2fe25d1b60a8>

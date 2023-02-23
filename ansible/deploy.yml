@@ -1,0 +1,48 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/copy_module.html
+- name: Create a project directory
+  ansible.builtin.file:
+    path: /home/roman/c2hw
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: copy Docker Compose files
+  ansible.builtin.copy:
+    src: ../docker-compose.yml
+    dest: /home/roman/c2hw/docker-compose.yml
+
+- name: Create directoryes
+  ansible.builtin.file:
+    path: /home/roman/c2hw/{{ item }}
+    state: directory
+    mode: '0755'
+  with_items:
+  - ssl
+  - confs
+  become: true
+
+- name: copy ssl files
+  ansible.builtin.copy:
+    src: ../.secure_files/{{ item }}
+    dest: /home/roman/c2hw/ssl/
+    mode: '0600'
+  with_items:
+  - ssl.crt
+  - ssl.key
+
+- name: copy conf files
+  ansible.builtin.copy:
+    src: ../confs/
+    dest: /home/roman/c2hw/confs
+    
+- name: copy env file
+  ansible.builtin.copy:
+    src: ../.secure_files/.env
+    dest: /home/roman/c2hw/.env
+
+# 'cmd' is module parameter
+- name: Run docker compose
+  ansible.builtin.command:
+    chdir: /home/roman/c2hw
+    cmd: docker-compose up -d

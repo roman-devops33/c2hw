@@ -2,18 +2,23 @@ version: "3.9"
 # docker system prune для очистки неиспользуемых данных
 services:
   
-  prometheus:
-    image:
-    container_name:
+  prometheus: # https://hub.docker.com/r/prom/prometheus
+    image: prom/prometheus:latest
+    container_name: c2-hw-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
     restart: unless-stopped
     environment:
     volumes:
+      - ./etc/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
     ports:
+      - 127.0.0.1:9090:9090
     depends_on:
       
   grafana:
     image:
-    container_name:
+    container_name: c2-hw-grafana
     restart: unless-stopped
     environment:
     volumes:
@@ -22,7 +27,7 @@ services:
       
   node-explorer:
     image:
-    container_name:
+    container_name: c2-hw-node-explorer
     restart: unless-stopped
     environment:
     volumes:
@@ -31,7 +36,7 @@ services:
       
   blackbox-explorer:
     image:
-    container_name:
+    container_name: c2-hw-blackbox-explorer
     restart: unless-stopped
     environment:
     volumes:
@@ -40,7 +45,7 @@ services:
       
   alert-manager: 
     image:
-    container_name:
+    container_name: c2-hw-alert-manager
     restart: unless-stopped
     environment:
     volumes:

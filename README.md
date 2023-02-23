@@ -28,3 +28,6 @@
 - [ ] Проверено, оценка n/n
 
 ___
+
+* prometheus install: <https://prometheus.io/docs/prometheus/latest/installation/>
+* prometheus docker: <https://hub.docker.com/r/prom/prometheus>

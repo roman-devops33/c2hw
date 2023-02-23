@@ -59,7 +59,7 @@ resource "yandex_vpc_subnet" "subnet" {
 resource "cloudflare_record" "ssh" {
   for_each = var.image_family
   zone_id  = var.cloudflare_zone_id
-  name     = "ssh-${each.key}"
+  name     = length(var.image_family) == 1 ? "ssh" : "ssh-${each.key}"
   value    = yandex_compute_instance.vm[each.key].network_interface[0].nat_ip_address
   type     = "A"
   proxied  = false
@@ -68,7 +68,7 @@ resource "cloudflare_record" "ssh" {
 resource "cloudflare_record" "vm" {
   for_each = var.image_family
   zone_id  = var.cloudflare_zone_id
-  name     = each.key
+  name     = length(var.image_family) == 1 ? "*" : each.key
   value    = yandex_compute_instance.vm[each.key].network_interface[0].nat_ip_address
   type     = "A"
   proxied  = true

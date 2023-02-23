@@ -1,14 +1,17 @@
 version: "3.9"
 # docker system prune для очистки неиспользуемых данных
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
 services:
-  
   prometheus: # https://hub.docker.com/r/prom/prometheus
     image: prom/prometheus:latest
     container_name: c2hw-prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     restart: unless-stopped
-    environment:
     volumes:
       - ./etc/prometheus:/etc/prometheus
       - prometheus_data:/prometheus
@@ -26,7 +29,6 @@ services:
     container_name: c2hw-cadvisor
     restart: unless-stopped
     privileged: true
-    environment:
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
@@ -43,7 +45,6 @@ services:
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     restart: unless-stopped
-    environment:
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -56,7 +57,6 @@ services:
     container_name: c2hw-blackbox-exporter
     command: '--config.file=/config/blackbox.yml'
     restart: unless-stopped
-    environment:
     volumes:
       - ./confs/blackbox:/config
     expose:
@@ -67,9 +67,8 @@ services:
     container_name: c2hw-alert-manager
     command: '--config.file=/etc/alertmanager/config.yml'
     restart: unless-stopped
-    environment:
-      - ./confs/alertmanager/:/etc/alertmanager
     volumes:
+      - ./confs/alertmanager/:/etc/alertmanager
     expose:
       - 9093
       

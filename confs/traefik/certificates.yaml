@@ -1,0 +1,5 @@
+# https://traefik.io/blog/traefik-2-tls-101-23b4fbee81f1/
+ tls:
+   certificates:
+     - certFile: /ssl/ssl.crt
+       keyFile: /ssl/ssl.key

@@ -71,9 +71,16 @@ services:
     ports:
       
   grafana:
-    image:
+    image: grafana/grafana:latest
     container_name: c2hw-grafana
     restart: unless-stopped
     environment:
+      - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
+      - grafana_data:/var/lib/grafana
+      - ./confs/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./confs/grafana/provisioning/datasources:/etc/grafana/provisioning/datasource
     ports:
+      - 127.0.0.1:3000:3000
+    depends_on:
+      - prometheus

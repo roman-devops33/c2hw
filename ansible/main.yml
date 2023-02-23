@@ -1,5 +1,5 @@
 ---
-# to start: ansible-playbook main.yml
+# to start: ansible-playbook -i ../hosts main.yml
 - hosts: all
   become: true
   tasks:

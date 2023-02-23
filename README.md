@@ -35,3 +35,4 @@ ___
 * docker env vars: <https://docs.docker.com/compose/environment-variables/set-environment-variables/>
 * alertmanager telegram conf example: <https://velenux.wordpress.com/2022/09/12/how-to-configure-prometheus-alertmanager-to-send-alerts-to-telegram/>
 * alertmanager conf docs: <https://prometheus.io/docs/alerting/latest/configuration/>
+* traefik ssl: <https://traefik.io/blog/traefik-2-tls-101-23b4fbee81f1/>

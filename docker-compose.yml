@@ -17,17 +17,25 @@ services:
     expose:
       - 9090
     depends_on:
+      - cadvisor
+      - node-exporter
+      - blackbox-exporter
       
-  grafana:
-    image:
-    container_name: c2hw-grafana
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: c2hw-cadvisor
     restart: unless-stopped
+    privileged: true
     environment:
     volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
     ports:
-    depends_on:
+      - 8080:8080
       
-  node-explorer:
+  node-exporter:
     image: prom/node-exporter:latest
     container_name: c2hw-node-explorer
     command:
@@ -42,7 +50,6 @@ services:
       - /:/rootfs:ro
     expose:
       - 9100
-    depends_on:
       
   blackbox-exporter:
     image: prom/blackbox-exporter:latest
@@ -54,7 +61,6 @@ services:
       - ./confs/blackbox:/config
     expose:
       - 9115
-    depends_on:
       
   alert-manager: 
     image:
@@ -63,4 +69,11 @@ services:
     environment:
     volumes:
     ports:
-    depends_on:
+      
+  grafana:
+    image:
+    container_name: c2hw-grafana
+    restart: unless-stopped
+    environment:
+    volumes:
+    ports:

@@ -63,12 +63,15 @@ services:
       - 9115
       
   alert-manager: 
-    image:
+    image: prom/alertmanager:latest
     container_name: c2hw-alert-manager
+    command: '--config.file=/etc/alertmanager/config.yml'
     restart: unless-stopped
     environment:
+      - ./confs/alertmanager/:/etc/alertmanager
     volumes:
-    ports:
+    expose:
+      - 9093
       
   grafana:
     image: grafana/grafana:latest

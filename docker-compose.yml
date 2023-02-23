@@ -1,0 +1,133 @@
+version: '3.9'
+# sudo docker system prune для очистки неиспользуемых данных
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
+services:
+  prometheus: # https://hub.docker.com/r/prom/prometheus
+    image: prom/prometheus:latest
+    container_name: c2hw-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    restart: unless-stopped
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    volumes:
+      - ./confs/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    ports:
+      - 127.0.0.1:9090:9090
+    expose:
+      - 9090
+    depends_on:
+      - cadvisor
+      - node-exporter
+      - blackbox-exporter
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.prometheus.entrypoints=https'
+      - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.prometheus.tls=true'
+      - 'traefik.http.services.prometheus.loadbalancer.server.port=9090'
+      
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: c2hw-cadvisor
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - 8080:8080
+      
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: c2hw-node-exporter
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    expose:
+      - 9100
+      
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    container_name: c2hw-blackbox-exporter
+    command: '--config.file=/config/blackbox.yml'
+    restart: unless-stopped
+    volumes:
+      - ./confs/blackbox:/config
+    expose:
+      - 9115
+      
+  alert-manager: 
+    image: prom/alertmanager:latest
+    container_name: c2hw-alert-manager
+    command: '--config.file=/etc/alertmanager/config.yml'
+    restart: unless-stopped
+    volumes:
+      - ./confs/alertmanager/:/etc/alertmanager
+    expose:
+      - 9093
+      
+  grafana:
+    image: grafana/grafana:latest
+    container_name: c2hw-grafana
+    restart: unless-stopped
+    environment:
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./confs/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./confs/grafana/provisioning/datasources:/etc/grafana/provisioning/datasource
+    ports:
+      - 127.0.0.1:3000:3000
+    depends_on:
+      - prometheus
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.grafana.entrypoints=https'
+      - 'traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.grafana.tls=true'
+      - 'traefik.http.services.grafana.loadbalancer.server.port=3000'
+
+  traefik:
+    image: traefik:v2.9
+    container_name: c2hw-traefik
+    command:
+      - '--api.dashboard=true'
+      - '--metrics.prometheus=true'
+      - '--providers.docker=true'
+      - '--providers.docker.watch'
+      - '--entrypoints.http.address=:80'
+      - '--entrypoints.https.address=:443'
+      - '--providers.file.directory=/config'
+      - '--providers.file.watch=true'
+    restart: unless-stopped
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./confs/traefik:/config
+      - ./confs/ssl:/ssl:ro
+    ports:
+      - 80:80
+      - 443:443
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.traefik.entrypoints=https'
+      - 'traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.traefik.tls=true'
+      - 'traefik.http.routers.traefik.service=api@internal'

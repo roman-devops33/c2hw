@@ -46,7 +46,7 @@ name: 'Terraform'
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "demo" ]
   pull_request:
 
 permissions:
@@ -66,6 +66,11 @@ jobs:
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
+      uses: actions/checkout@v3
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Copy secure-files
       uses: actions/checkout@v3
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token

@@ -6,6 +6,7 @@ on:
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - run: echo ${TEST_FILE}
       - run: echo "� The job was automatically triggered by a ${{ github.event_name }} event."

@@ -48,3 +48,4 @@ ___
 * traefik example: <https://docs.ibracorp.io/traefik/master/docker-compose>
 * traefik example two: <https://gmasil.de/docker/configure-traefik>
 * treafik prometheus monitoring: <https://medium.com/@ugenef/application-monitoring-with-traefik-prometheus-grafana-and-docker-compose-for-beginners-2fe25d1b60a8>
+* github actions context: <https://docs.github.com/en/actions/learn-github-actions/contexts#github-context>

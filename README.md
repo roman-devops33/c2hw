@@ -49,3 +49,5 @@ ___
 * traefik example two: <https://gmasil.de/docker/configure-traefik>
 * treafik prometheus monitoring: <https://medium.com/@ugenef/application-monitoring-with-traefik-prometheus-grafana-and-docker-compose-for-beginners-2fe25d1b60a8>
 * github actions context: <https://docs.github.com/en/actions/learn-github-actions/contexts#github-context>
+* github actions ansible: <https://faun.pub/how-to-run-an-ansible-playbook-using-github-action-42430dec944>
+* github actions ansible: <https://stackoverflow.com/questions/74048180/how-to-run-ansible-playbook-from-github-actions-without-using-external-action>

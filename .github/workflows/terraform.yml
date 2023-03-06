@@ -46,7 +46,9 @@ name: 'Terraform'
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+      - 'ci/github'
   pull_request:
 
 defaults:

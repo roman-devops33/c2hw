@@ -78,11 +78,12 @@ jobs:
 
     # Create files
     - name: create secure-files
-      run: mkdir .secure_files
-      run: echo ${{ secrets.SECURE_FILES_BACKEND }} > .secure_files/backend.tfvars
-      run: echo ${{ secrets.SECURE_FILES_TFVARS }} > .secure_files/terraform.tfvars
-      run: echo ${{ secrets.SECURE_FILES_CLOUD_INIT }} > .secure_files/ya-cloud-init.yml
-      run: echo ${{ secrets.SECURE_FILES_YA_KEYFILE }} > .secure_files/yackey.json
+      run: |
+        mkdir .secure_files
+        echo ${{ secrets.SECURE_FILES_BACKEND }} > .secure_files/backend.tfvars
+        echo ${{ secrets.SECURE_FILES_TFVARS }} > .secure_files/terraform.tfvars
+        echo ${{ secrets.SECURE_FILES_CLOUD_INIT }} > .secure_files/ya-cloud-init.yml
+        echo ${{ secrets.SECURE_FILES_YA_KEYFILE }} > .secure_files/yackey.json
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -90,8 +91,9 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      run: cd terraform/
-      run: terraform init -backend-config='../.secure_files/backend.tfvars'
+      run: | 
+        cd terraform/
+        terraform init -backend-config='../.secure_files/backend.tfvars'
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format

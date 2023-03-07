@@ -2,12 +2,6 @@
 # Ручной запуск: pre-commit run -a
 # Hooks list: https://pre-commit.com/hooks.html
 repos:
-    # git lint
-  - repo: https://github.com/jorisroovers/gitlint
-    rev: v0.18.0
-    hooks:
-      - id: gitlint
-
     # GitLeaks
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.16.0
@@ -42,3 +36,9 @@ repos:
      # rev: '7304930'
       # hooks:
        #   - id: dansabel
+
+    # git lint
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.18.0
+    hooks:
+      - id: gitlint

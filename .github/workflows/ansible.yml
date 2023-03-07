@@ -1,0 +1,13 @@
+---
+name: Ansible
+on:
+  push:
+    branches: [test]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  ansible:
+    name: Ansible
+    runs-on: self-hosted
+    environment: production

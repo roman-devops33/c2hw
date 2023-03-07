@@ -35,7 +35,7 @@
   ansible.builtin.copy:
     src: ../confs/
     dest: /home/roman/c2hw/confs
-    
+
 - name: copy env file
   ansible.builtin.copy:
     src: ../.secure_files/.env

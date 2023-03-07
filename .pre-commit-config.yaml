@@ -33,7 +33,7 @@ repos:
 
     # YAML
   - repo: https://github.com/lyz-code/yamlfix/
-    rev: main
+    rev: 1.9.0
     hooks:
       - id: yamlfix
 

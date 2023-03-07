@@ -29,7 +29,7 @@ services:
       - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN_NAME}`)'
       - 'traefik.http.routers.prometheus.tls=true'
       - 'traefik.http.services.prometheus.loadbalancer.server.port=9090'
-      
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: c2hw-cadvisor
@@ -48,7 +48,7 @@ services:
       - 'traefik.http.routers.cadvisor.rule=Host(`cadvisor.${DOMAIN_NAME}`)'
       - 'traefik.http.routers.cadvisor.tls=true'
       - 'traefik.http.services.cadvisor.loadbalancer.server.port=8080'
-      
+
   node-exporter:
     image: prom/node-exporter:latest
     container_name: c2hw-node-exporter
@@ -63,7 +63,7 @@ services:
       - /:/rootfs:ro
     expose:
       - 9100
-      
+
   blackbox-exporter:
     image: prom/blackbox-exporter:latest
     container_name: c2hw-blackbox-exporter
@@ -73,8 +73,8 @@ services:
       - ./confs/blackbox:/config
     expose:
       - 9115
-      
-  alert-manager: 
+
+  alert-manager:
     image: prom/alertmanager:latest
     container_name: c2hw-alert-manager
     command: '--config.file=/etc/alertmanager/config.yml'
@@ -83,7 +83,7 @@ services:
       - ./confs/alertmanager/:/etc/alertmanager
     expose:
       - 9093
-      
+
   grafana:
     image: grafana/grafana:latest
     container_name: c2hw-grafana

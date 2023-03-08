@@ -1,3 +1,4 @@
+---
 # This workflow installs the latest version of Terraform CLI and configures the Terraform CLI configuration file
 # with an API token for Terraform Cloud (app.terraform.io). On pull request events, this workflow will run
 # `terraform init`, `terraform fmt`, and `terraform plan` (speculative plan via Terraform Cloud). On push events
@@ -41,30 +42,23 @@
 #       uses: hashicorp/setup-terraform@v1
 #       with:
 #         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-name: 'Terraform'
-
+name: Terraform
 on:
   push:
-    branches:
-      - main
-      - 'ci/github'
+    branches: [main, ci/github]
   pull_request:
-
 permissions:
   contents: read
-
 env:
   TF_VAR_cloudflare_api_token: ${{ secrets.TF_VAR_cloudflare_api_token }}
   TF_VAR_cloudflare_zone_id: ${{ secrets.TF_VAR_cloudflare_zone_id }}
   TF_VAR_ya_cloud_init: ${{ vars.TF_VAR_ya_cloud_init }}
   TF_VAR_folder_id: ${{ secrets.TF_VAR_folder_id }}
-  TF_VAR_cloud_id:  ${{ vars.TF_VAR_cloud_id }}
+  TF_VAR_cloud_id: ${{ vars.TF_VAR_cloud_id }}
   TF_VAR_yakey: ${{ vars.TF_VAR_yakey }}
-
 jobs:
   terraform:
-    name: 'Terraform'
+    name: Terraform
     runs-on: ubuntu-latest
     environment: production
 
@@ -73,49 +67,49 @@ jobs:
       run:
         shell: bash
         working-directory: terraform
-
     steps:
     # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
     # Create files
-    - name: create secure-files
-      run: |
-        mkdir ../.secure_files
-        echo ${{ secrets.SECURE_FILES_BACKEND }} > ../.secure_files/backend.tfvars
-        echo ${{ secrets.SECURE_FILES_TFVARS }} > ../.secure_files/terraform.tfvars
-        echo ${{ secrets.SECURE_FILES_CLOUD_INIT }} > ../.secure_files/ya-cloud-init.yml
-        echo ${{ secrets.SECURE_FILES_YA_KEYFILE }} > ../.secure_files/yackey.json
+      - name: create secure-files
+        run: |
+          mkdir ../.secure_files
+          echo ${{ secrets.SECURE_FILES_BACKEND }} > ../.secure_files/backend.tfvars
+          echo ${{ secrets.SECURE_FILES_TFVARS }} > ../.secure_files/terraform.tfvars
+          echo ${{ secrets.SECURE_FILES_CLOUD_INIT }} > ../.secure_files/ya-cloud-init.yml
+          echo ${{ secrets.SECURE_FILES_YA_KEYFILE }} > ../.secure_files/yackey.json
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2.0.3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init
-      run: |
-        terraform init \
-        -backend-config='../.secure_files/backend.tfvars'
+      - name: Terraform Init
+        run: |
+          terraform init \
+          -backend-config='../.secure_files/backend.tfvars'
 
     # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format
-      run: |
-        terraform fmt -check
+      - name: Terraform Format
+        run: |
+          terraform fmt -check
 
     # Generates an execution plan for Terraform
-    - name: Terraform Plan
-      run: |
-        terraform plan \
-        -input=false \
-        -var-file='../.secure_files/terraform.tfvars'
+      - name: Terraform Plan
+        run: |
+          terraform plan \
+          -input=false \
+          -var-file='../.secure_files/terraform.tfvars'
+          echo "### Hello world! :rocket:" >> $GITHUB_STEP_SUMMARY
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-    - name: Terraform Apply
-      if: github.ref_name == 'main'
-      run: |
-        terraform apply \
-        -auto-approve \
-        -input=false \
-        -var-file='../.secure_files/terraform.tfvars'
+      - name: Terraform Apply
+        if: github.ref_name == 'main'
+        run: |-
+          terraform apply \
+          -auto-approve \
+          -input=false \
+          -var-file='../.secure_files/terraform.tfvars'

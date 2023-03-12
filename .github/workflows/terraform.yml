@@ -120,7 +120,7 @@ jobs:
     name: Ansible
     runs-on: ubuntu-latest
     environment: production
-    defaulst:
+    defaults:
       run:
         working-directory: ansible
     steps:

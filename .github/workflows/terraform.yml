@@ -78,7 +78,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ansible-inventory
-          path: ../hosts
+          path: hosts
 
   # https://faun.pub/how-to-run-an-ansible-playbook-using-github-action-42430dec944
   # https://www.dvlv.co.uk/how-we-use-github-actions-and-ansible-to-automate-flask-postgres-applications.html
@@ -115,8 +115,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ansible-inventory
+          path: hosts
 
       - name: Run playbook
         if: github.ref_name == 'main'
         run: |-
-          ansible-playbook -i ../hosts main.yml
+          ansible-playbook -i hosts main.yml

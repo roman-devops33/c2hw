@@ -87,3 +87,9 @@ resource "local_file" "inventory" {
   filename        = "${path.module}/../hosts"
   file_permission = "0600"
 }
+
+resource "local_file" "artefact" {
+  content         = local.hosts
+  filename        = "${path.module}/hosts"
+  file_permission = "0600"
+}

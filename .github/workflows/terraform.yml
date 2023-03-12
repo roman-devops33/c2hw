@@ -119,5 +119,5 @@ jobs:
       - name: Run playbook
         if: github.ref_name == 'main'
         run: |
-          cat hosts >> $GITHUB_STEP_SUMMARY
+          cat /home/runner/work/c2hw/c2hw/hosts >> $GITHUB_STEP_SUMMARY
           ansible-playbook -i /home/runner/work/c2hw/c2hw/hosts main.yml

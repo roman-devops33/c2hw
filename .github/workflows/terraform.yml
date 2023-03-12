@@ -115,7 +115,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ansible-inventory
-          path: hosts
 
       - name: Run playbook
         if: github.ref_name == 'main'

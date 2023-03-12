@@ -84,6 +84,7 @@ jobs:
   # https://www.dvlv.co.uk/how-we-use-github-actions-and-ansible-to-automate-flask-postgres-applications.html
   ansible:
     name: Ansible
+    needs: terraform
     runs-on: ubuntu-latest
     environment: production
     defaults:

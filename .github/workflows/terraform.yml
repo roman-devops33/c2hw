@@ -13,7 +13,7 @@ env:
   TF_VAR_folder_id: ${{ secrets.TF_VAR_folder_id }}
   TF_VAR_cloud_id: ${{ vars.TF_VAR_cloud_id }}
   TF_VAR_yakey: ${{ vars.TF_VAR_yakey }}
-  ANSIBLE_HOST_KEY_CHECKING: false
+  ANSIBLE_HOST_KEY_CHECKING: False
 
 jobs:
   terraform:
@@ -61,7 +61,7 @@ jobs:
           terraform plan \
           -input=false \
           -var-file='../.secure_files/terraform.tfvars'
-          echo "### HOSTS :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "### :rocket:" >> $GITHUB_STEP_SUMMARY
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
@@ -107,7 +107,7 @@ jobs:
       - name: Install SSH key
         run: |
           mkdir ~/.ssh
-          echo "${{secrets.ANSIBLE_SSH_KEY}}" > ~/.ssh/ansible
+          echo "${{ secrets.ANSIBLE_SSH_KEY }}" > ~/.ssh/ansible
           chmod 600 ~/.ssh/ansible
 
       - name: Download inventory

@@ -107,8 +107,9 @@ jobs:
       - name: Install SSH key
         run: |
           mkdir ~/.ssh
-          echo "${{ secrets.ANSIBLE_SSH_KEY }}" > ~/.ssh/ansible
+          echo ${{ secrets.ANSIBLE_SSH_KEY }} > ~/.ssh/ansible
           chmod 600 ~/.ssh/ansible
+          echo ${ANSIBLE_HOST_KEY_CHECKING}
 
       - name: Download inventory
         if: github.ref_name == 'main'
@@ -119,5 +120,6 @@ jobs:
       - name: Run playbook
         if: github.ref_name == 'main'
         run: |
+          echo ${ANSIBLE_HOST_KEY_CHECKING}
           cat /home/runner/work/c2hw/c2hw/hosts >> $GITHUB_STEP_SUMMARY
           ansible-playbook -i /home/runner/work/c2hw/c2hw/hosts main.yml

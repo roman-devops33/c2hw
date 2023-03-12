@@ -1,5 +1,5 @@
 # Для теста использовать: terraform plan -var-file=../.secure_files/terraform.tfvars
-# Для разворачивания:     terraform apply -var-file=../.secure_files/terraform.tfvars
+# Для разворачивания:     terraform apply -var-file=../.secure_files/terraform.tfvars -auto-approve
 # Для удаления:           terraform destroy -var-file=../.secure_files/terraform.tfvars -auto-approve
 
 # Create VM

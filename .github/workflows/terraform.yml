@@ -42,7 +42,7 @@
 #       uses: hashicorp/setup-terraform@v1
 #       with:
 #         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-name: Terraform
+name: Build
 on:
   push:
     branches: [main, ci/github]
@@ -56,6 +56,7 @@ env:
   TF_VAR_folder_id: ${{ secrets.TF_VAR_folder_id }}
   TF_VAR_cloud_id: ${{ vars.TF_VAR_cloud_id }}
   TF_VAR_yakey: ${{ vars.TF_VAR_yakey }}
+  ANSIBLE_HOST_KEY_CHECKING: false
 jobs:
   terraform:
     name: Terraform
@@ -108,8 +109,39 @@ jobs:
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
       - name: Terraform Apply
         if: github.ref_name == 'main'
-        run: |-
+        run: |
           terraform apply \
           -auto-approve \
           -input=false \
           -var-file='../.secure_files/terraform.tfvars'
+
+  # https://faun.pub/how-to-run-an-ansible-playbook-using-github-action-42430dec944
+  # https://www.dvlv.co.uk/how-we-use-github-actions-and-ansible-to-automate-flask-postgres-applications.html
+  ansible:
+    name: Ansible
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: ansible
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install dependencies Including Ansible
+        run: |
+          python3 -m venv ansible
+          source ansible/bin/activate
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+      - name: Install SSH key
+        run: |
+          mkdir ~/.ssh
+          echo "${{secrets.ANSIBLE_SSH_KEY}}" > ~/.ssh/ansible
+          chmod 600 ~/.ssh/ansible
+      - name: Run playbook
+        if: github.ref_name == 'main'
+        run: |-
+          ansible-playbook -i ../hosts main.yml

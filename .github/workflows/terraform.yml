@@ -114,6 +114,12 @@ jobs:
           -auto-approve \
           -input=false \
           -var-file='../.secure_files/terraform.tfvars'
+      - name: Save inventory
+        if: github.ref_name == 'main'
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ansible-inventory
+          path: ../hosts
 
   # https://faun.pub/how-to-run-an-ansible-playbook-using-github-action-42430dec944
   # https://www.dvlv.co.uk/how-we-use-github-actions-and-ansible-to-automate-flask-postgres-applications.html
@@ -141,6 +147,11 @@ jobs:
           mkdir ~/.ssh
           echo "${{secrets.ANSIBLE_SSH_KEY}}" > ~/.ssh/ansible
           chmod 600 ~/.ssh/ansible
+      - name: Download inventory
+        if: github.ref_name == 'main'
+      - uses: actions/download-artifact@v3
+        with:
+          name: ansible-inventory
       - name: Run playbook
         if: github.ref_name == 'main'
         run: |-

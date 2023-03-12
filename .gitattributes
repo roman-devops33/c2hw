@@ -1,1 +1,5 @@
 screenshots/*.png filter=lfs diff=lfs merge=lfs -text
+screenshots/alerts.png filter=lfs diff=lfs merge=lfs -text
+screenshots/dashb1.png filter=lfs diff=lfs merge=lfs -text
+screenshots/dashb2.png filter=lfs diff=lfs merge=lfs -text
+screenshots/targets.png filter=lfs diff=lfs merge=lfs -text

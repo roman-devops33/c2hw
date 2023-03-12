@@ -1,47 +1,4 @@
 ---
-# This workflow installs the latest version of Terraform CLI and configures the Terraform CLI configuration file
-# with an API token for Terraform Cloud (app.terraform.io). On pull request events, this workflow will run
-# `terraform init`, `terraform fmt`, and `terraform plan` (speculative plan via Terraform Cloud). On push events
-# to the "main" branch, `terraform apply` will be executed.
-#
-# Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
-#
-# To use this workflow, you will need to complete the following setup steps.
-#
-# 1. Create a `main.tf` file in the root of this repository with the `remote` backend and one or more resources defined.
-#   Example `main.tf`:
-#     # The configuration for the `remote` backend.
-#     terraform {
-#       backend "remote" {
-#         # The name of your Terraform Cloud organization.
-#         organization = "example-organization"
-#
-#         # The name of the Terraform Cloud workspace to store Terraform state files in.
-#         workspaces {
-#           name = "example-workspace"
-#         }
-#       }
-#     }
-#
-#     # An example resource that does nothing.
-#     resource "null_resource" "example" {
-#       triggers = {
-#         value = "A example resource that does nothing!"
-#       }
-#     }
-#
-#
-# 2. Generate a Terraform Cloud user API token and store it as a GitHub secret (e.g. TF_API_TOKEN) on this repository.
-#   Documentation:
-#     - https://www.terraform.io/docs/cloud/users-teams-organizations/api-tokens.html
-#     - https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
-#
-# 3. Reference the GitHub secret in step using the `hashicorp/setup-terraform` GitHub Action.
-#   Example:
-#     - name: Setup Terraform
-#       uses: hashicorp/setup-terraform@v1
-#       with:
-#         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 name: Build
 on:
   push:
@@ -57,6 +14,7 @@ env:
   TF_VAR_cloud_id: ${{ vars.TF_VAR_cloud_id }}
   TF_VAR_yakey: ${{ vars.TF_VAR_yakey }}
   ANSIBLE_HOST_KEY_CHECKING: false
+
 jobs:
   terraform:
     name: Terraform
@@ -115,10 +73,18 @@ jobs:
           -input=false \
           -var-file='../.secure_files/terraform.tfvars'
 
+      - name: Save inventory
+        if: github.ref_name == 'main'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ansible-inventory
+          path: ../hosts
+
   # https://faun.pub/how-to-run-an-ansible-playbook-using-github-action-42430dec944
   # https://www.dvlv.co.uk/how-we-use-github-actions-and-ansible-to-automate-flask-postgres-applications.html
   ansible:
     name: Ansible
+    needs: terraform
     runs-on: ubuntu-latest
     environment: production
     defaults:
@@ -130,17 +96,26 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
+
       - name: Install dependencies Including Ansible
         run: |
           python3 -m venv ansible
           source ansible/bin/activate
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
+
       - name: Install SSH key
         run: |
           mkdir ~/.ssh
           echo "${{secrets.ANSIBLE_SSH_KEY}}" > ~/.ssh/ansible
           chmod 600 ~/.ssh/ansible
+
+      - name: Download inventory
+        if: github.ref_name == 'main'
+        uses: actions/download-artifact@v3
+        with:
+          name: ansible-inventory
+
       - name: Run playbook
         if: github.ref_name == 'main'
         run: |-
